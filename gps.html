@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+        <script>
+            ///https://github.com/hugobarragon/leaflet-drift-marker
+                var exports = {};
+        </script>
+<script src='https://unpkg.com/leaflet-drift-marker@1.0.3/lib/DriftMarker/Drift_Marker.js'></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="map" class="mapa" style="width:100vw;height:300px;"> </div>
+    <p id="geolocation">Watching geolocation...</p>
+    <button id="button"> Watch</button>
+    <button id="stop"> stop</button>
+    <textarea id="result" cols="100" rows="10"></textarea>
+    
+
+    <script>
+
+        var map = L.map('map').setView([40.91, -96.63], 8);
+        var layer
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+
+
+        var watchID = null;
+        var pos
+        var latlngs = []; 
+
+        var marker = new Drift_Marker([19.04469, 72.9258], {
+	 	        draggable: true,
+	 	        title: "Resource location",
+	 	        alt: "Resource Location",
+                 //riseOnHover: true,
+                 keepAtCenter:true
+	 	    }).addTo(map)
+      
+
+        //
+        function f() {
+            // Update every 1 ms seconds
+            var options = { enableHighAccuracy: true, timeout: 5000, maximumAge: 0, desiredAccuracy: 1, frequency: 1000 };
+            watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
+        }
+
+        // onSuccess Geolocation
+        //
+        function onSuccess(position) {
+
+
+            var str = 'Latitude: ' + position.coords.latitude + '<br>' +
+                'Longitude: ' + position.coords.longitude + '<br>' +
+                'Timestamp: ' + position.timestamp + '<br>\r\n';
+            document.getElementById('result').value += str;
+            pos = [position.coords.latitude, position.coords.longitude]
+            console.log(pos)
+
+            map.setView(pos, 18)
+
+
+
+            latlngs.push([position.coords.latitude, position.coords.longitude])
+            var polyline = L.polyline(latlngs, { color: 'red' }).addTo(map);
+
+            // zoom the map to the polyline
+            //map.fitBounds(polyline.getBounds());
+
+            marker.slideTo(pos, {
+                duration: 2000,
+               
+            });
+
+
+
+            //anim marker
+            /*
+            var animatedMarker = L.animatedMarker(polyline.getLatLngs(),{
+                distance: 300,
+                interval: 2000,
+            });
+            map.addLayer(animatedMarker);
+            */
+
+
+        }
+
+        // clear the watch that was started earlier
+        // 
+        function clearWatch() {
+            if (watchID != null) {
+                navigator.geolocation.clearWatch(watchID);
+                watchID = null;
+
+            }
+        }
+
+        // onError Callback receives a PositionError object
+        //
+        function onError(error) {
+            alert('code: ' + error.code + '\n' +
+                'message: ' + error.message + '\n');
+        }
+
+        document.getElementById('button').addEventListener('click', f);
+        document.getElementById('stop').addEventListener('click', clearWatch);
+
+
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p id="contador"></p>
+    <script>
+
+//// datas https://stackoverflow.com/questions/3552461/how-to-format-a-javascript-date
+const formatar = (data) => {
+  const ano = data.getFullYear();
+  const mes = (`00${data.getMonth() + 1}`).slice(-2);
+  const dia = (`00${data.getDate()}`).slice(-2);
+  const hora = (`00${data.getHours()}`).slice(-2);
+  const minutos = (`00${data.getMinutes()}`).slice(-2);
+  const segundos = (`00${data.getSeconds()}`).slice(-2);
+
+  return `${dia}/${mes}/${ano}:${hora}:${minutos}:${segundos}`;
+};
+///////
+let contador = document.getElementById('contador')
+let countDownDate = new Date("Jan 31, 2021 00:00:00").getTime(); // The deadline
+let x = setInterval(() => {
+   let now = new Date().getTime();
+   let distance = countDownDate - now;
+
+   let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+   let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+   let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+   let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+   contador.innerHTML=days + "d " + hours + "h " + minutes + "m " + seconds + "s"
+   console.log(days + "d " + hours + "h " + minutes + "m " + seconds + "s"); // Countdown output
+  
+console.log(formatar(new Date()));
+   if (distance < 0) {
+      clearInterval(x);
+      console.log("Too late!") // Text at the end of the countdown
+   }
+}, 1000);
+/////
+var data = new Date();
+console.log(data.toLocaleDateString());
+
+
+
+// Teste da função
+var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute:'numeric', second:'numeric' };
+var today  = new Date();
+
+console.log(today.toLocaleDateString("en-US")); // 9/17/2016
+console.log(today.toLocaleDateString("en-US", options)); // Saturday, September 17, 2016
+console.log(today.toLocaleDateString("pt-PT", options)); // शनिवार, 17 सितंबर 2016
+
+    </script>
+</body>
+</html>

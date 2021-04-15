@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <p id="geolocation">Watching geolocation...</p>
+    <button id="button"> Watch</button>
+    <textarea id="result" cols="100" rows="10"></textarea>
+    <ul id="avatar"></ul>
+    <script>
+
+        let avatar = document.querySelector('#avatar')
+
+        async function postData(url) {
+            /**
+             * The request is still 'POST' but the $_GET variable
+             * will get values too: 'name' and 'favorite_color'
+             */
+            const response = await fetch(
+                url,
+                {
+                    method: 'GET',
+
+
+                    /*
+                     * We also need to stringify the values, turn the
+                     * JavaScript object to a single string that is accepted
+                     * as JSON. So we are sending one string that contains
+                     * all our values
+                     */
+
+                }
+            );
+            const data = await response.json();
+
+            return data.results[0].picture.large
+
+        }
+        console.log(avatar)
+        const promise = postData('https://randomuser.me/api/?gender=female')
+
+        async function im() {
+            void async function () {
+                var total = await postData('https://randomuser.me/api/?gender=female')
+                let image = document.createElement('img')
+                image.setAttribute('src', total)
+                let p = document.createElement('li')
+                p.appendChild(image)
+                avatar.appendChild(p)
+
+
+
+            }()
+
+        }
+
+          im()
+
+
+        
+
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>
